@@ -17,8 +17,15 @@ class Graph:
         return output
     
     def add_edge(self, node1, node2, power_min, dist=1):
+        
+        self.graph[node1].append((node2, power_min, dist))
+        self.graph[node2].append((node1, power_min, dist))
+        
+        self.nb_edges += 1
+        
         """
-        Adds an edge to the graph. Graphs are not oriented, hence an edge is added to the adjacency list of both end nodes. 
+        Adds an edge to the graph. Graphs are not oriented, hence an edge is
+         added to the adjacency list of both end nodes. 
 
         Parameters: 
         -----------
@@ -31,7 +38,7 @@ class Graph:
         dist: numeric (int or float), optional
             Distance between node1 and node2 on the edge. Default is 1.
         """
-        raise NotImplementedError
+        return
     
 
     def get_path_with_power(self, src, dest, power):
@@ -39,6 +46,9 @@ class Graph:
     
 
     def connected_components(self):
+        
+        
+        
         raise NotImplementedError
 
 
@@ -57,6 +67,23 @@ class Graph:
 
 
 def graph_from_file(filename):
+    file = open(filename, 'r')
+    nodes = []
+    lines = file.readlines() 
+    line1 = lines.pop(0).split()
+    nodes = range(1, int(line1[0]) + 1)
+    
+    graph = Graph(nodes)
+    for line in lines :    
+        data = [int(x) for x in line.split()]    
+        graph.add_edge(data[0], data[1], data[2])
+
+
+
+
+    file.close()
+    
+    
     """
     Reads a text file and returns the graph as an object of the Graph class.
 
@@ -76,4 +103,4 @@ def graph_from_file(filename):
     G: Graph
         An object of the class Graph with the graph from file_name.
     """
-    raise NotImplementedError
+    return graph
