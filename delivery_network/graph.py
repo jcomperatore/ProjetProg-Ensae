@@ -41,15 +41,116 @@ class Graph:
         return
     
 
+    def mini(listeSommets, marque):
+        """
+        Renvoie le sommet de listeSommets
+        ayant la plus petite marque.
+        """
+        marquePlusPetite = inf
+        for s in listeSommets:
+            if marque[s] < marquePlusPetite:
+                marquePlusPetite = marque[s]
+                sommetPlusPetit = s
+        return sommetPlusPetit
+
+    def dijkstra(graphe, depart, arrivee):
+
+        # initialisation
+        marque = {}
+        for sommet in graphe: marque[sommet] = inf
+        marque[depart] = 0
+
+        non_selectionnes = [sommet for sommet in graphe]
+
+        pere = {}
+        pere[depart] = None
+
+        # boucle principale:
+        while non_selectionnes:
+            # sélection:
+            s = mini(non_selectionnes, marque)
+            if s == arrivee: break
+            non_selectionnes.remove(s)
+
+            # mise à jour des voisins du sommet sélectionné:
+            VoisinsAVisiter = [sommet for sommet in graphe[s] if sommet in non_selectionnes]
+            for sommet in VoisinsAVisiter:
+                p = marque[s] + graphe[s][sommet]
+                if p < marque[sommet]:
+                    marque[sommet] = p
+                    pere[sommet] = s
+
+        return marque, pere    
+    
     def get_path_with_power(self, src, dest, power):
-        raise NotImplementedError
+        
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   """     if power <= 0 : return None
+
+        cc = self.connected_components_set()  
+        impossible = True
+        for k in cc : 
+            if src in k and dest in k : 
+                impossible = False
+                cc=k
+                break
+
+        if impossible : 
+            return None
+
+        visited = set()
+        path = []
+        
+        def pathExplore(step, remainingPower):
+            visited.add(step)
+            print(visited)
+            print(path)
+            for node in self.graph[step] :
+                if node[0] == dest :
+                    if node[2] <= remainingPower :
+                        path.append(node[0])
+                        return path
+
+                elif node[0] not in visited:
+                    if node[2] <= remainingPower :
+                        path += [node[0]]
+                        path.extend(pathExplore(node[0], remainingPower - node[2]))
+                    else : visited.add(node[0])
+                    
+            if path[-1] == dest : return path
+            return None
+
+        return pathExplore(src, power)
+"""
+
     
 
     def connected_components(self):
         
-        
-        
-        raise NotImplementedError
+        visited = set()  # On crée une variable contenant l'ensemble des noeuds qui ont déjà été étudié par la méthode
+        components = []  # On crée la liste des composantes connexes, que l'on initialise comme vide
+
+        def nodeComponent(node):  # On crée une fonction qui nous permettra de relier le noeud à tous les autres noeuds de sa composante connexe
+            visited.add(node)     # Le noeud étudié est rajouté à la liste des noeuds étudiés
+            component = [node]    # Variable locale qui nous permettra de créer la composante
+            for neighbor in self.graph[node]:  # On parcourt déjà les voisins directs du noued étudié
+                if neighbor[0] not in visited:  # Pas besoin de réétudier les noeuds déjà traités. Permet à la boucle récursive de bien terminer
+                    component.extend(nodeComponent(neighbor[0]))  # On ajoute récursivement les composantes connexes des voisins directs du noeud
+            return component 
+
+        for node in self.graph:  # On parcourt tous les noeuds du graphe
+            if node not in visited:  # Pas besoin de réétudier les noeuds déjà traités.
+                components.append(nodeComponent(node))  # On rajoute à la liste des composantes chacune des composante
+
+        return components  #Renvoie une liste de liste de la forme [[Composante connexe 1],[autre composante connexe], ... ]
 
 
     def connected_components_set(self):
@@ -76,7 +177,10 @@ def graph_from_file(filename):
     graph = Graph(nodes)
     for line in lines :    
         data = [int(x) for x in line.split()]    
-        graph.add_edge(data[0], data[1], data[2])
+        if len(data) == 3 :
+             graph.add_edge(data[0], data[1], data[2])
+        else :
+             graph.add_edge(data[0], data[1], data[2], data[3])
 
 
 
