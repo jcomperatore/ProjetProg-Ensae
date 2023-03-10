@@ -1,29 +1,5 @@
 class Graph:
-    """
-    A class representing graphs as adjacency lists and implementing various algorithms on the graphs. Graphs in the class are not oriented. 
-    Attributes: 
-    -----------
-    nodes: NodeType
-        A list of nodes. Nodes can be of any immutable type, e.g., integer, float, or string.
-        We will usually use a list of integers 1, ..., n.
-    graph: dict
-        A dictionnary that contains the adjacency list of each node in the form
-        graph[node] = [(neighbor1, p1, d1), (neighbor1, p1, d1), ...]
-        where p1 is the minimal power on the edge (node, neighbor1) and d1 is the distance on the edge
-    nb_nodes: int
-        The number of nodes.
-    nb_edges: int
-        The number of edges. 
-    """
-
     def __init__(self, nodes=[]):
-        """
-        Initializes the graph with a set of nodes, and no edges. 
-        Parameters: 
-        -----------
-        nodes: list, optional
-            A list of nodes. Default is empty.
-        """
         self.nodes = nodes
         self.graph = dict([(n, []) for n in nodes])
         self.nb_nodes = len(nodes)
@@ -41,8 +17,15 @@ class Graph:
         return output
     
     def add_edge(self, node1, node2, power_min, dist=1):
+        
+        self.graph[node1].append((node2, power_min, dist))
+        self.graph[node2].append((node1, power_min, dist))
+        
+        self.nb_edges += 1
+        
         """
-        Adds an edge to the graph. Graphs are not oriented, hence an edge is added to the adjacency list of both end nodes. 
+        Adds an edge to the graph. Graphs are not oriented, hence an edge is
+         added to the adjacency list of both end nodes. 
 
         Parameters: 
         -----------
@@ -55,57 +38,101 @@ class Graph:
         dist: numeric (int or float), optional
             Distance between node1 and node2 on the edge. Default is 1.
         """
-        if node1 not in self.graph:
-            self.graph[node1] = []
-            self.nb_nodes += 1
-            self.nodes.append(node1)
-        if node2 not in self.graph:
-            self.graph[node2] = []
-            self.nb_nodes += 1
-            self.nodes.append(node2)
+        return
+    
 
-        self.graph[node1].append((node2, power_min, dist))
-        self.graph[node2].append((node1, power_min, dist))
-        self.nb_edges += 1
+    def mini(listeSommets, marque):
+        """
+        Renvoie le sommet de listeSommets
+        ayant la plus petite marque.
+        """
+        marquePlusPetite = inf
+        for s in listeSommets:
+            if marque[s] < marquePlusPetite:
+                marquePlusPetite = marque[s]
+                sommetPlusPetit = s
+        return sommetPlusPetit
 
+    def dijkstra(graphe, depart, arrivee):
+
+        # initialisation
+        marque = {}
+        for sommet in graphe: marque[sommet] = inf
+        marque[depart] = 0
+
+        non_selectionnes = [sommet for sommet in graphe]
+
+        pere = {}
+        pere[depart] = None
+
+        # boucle principale:
+        while non_selectionnes:
+            # sélection:
+            s = mini(non_selectionnes, marque)
+            if s == arrivee: break
+            non_selectionnes.remove(s)
+
+            # mise à jour des voisins du sommet sélectionné:
+            VoisinsAVisiter = [sommet for sommet in graphe[s] if sommet in non_selectionnes]
+            for sommet in VoisinsAVisiter:
+                p = marque[s] + graphe[s][sommet]
+                if p < marque[sommet]:
+                    marque[sommet] = p
+                    pere[sommet] = s
+
+        return marque, pere    
+    
     def get_path_with_power(self, src, dest, power):
-        visites=[False for i in range(self.nb_nodes)]
-        trajets=[[src]]
         
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   """     if power <= 0 : return None
+
         cc = self.connected_components_set()  
         impossible = True
         for k in cc : 
             if src in k and dest in k : 
                 impossible = False
                 cc=k
-        
+                break
+
         if impossible : 
             return None
+
+        visited = set()
+        path = []
         
-        if src == dest:
-            return [dest]
-        
-        while trajets:
-            path=trajets.pop(0)
-            i=path[-1]
-            if visites[i]==False:
-                visites[i] = True
-                for j in self.graph[i]:
-                    path2 = path.copy()
-                    if j[0] in cc and not visites[j[0]]:
-                        if j[0]==dest and power>=j[1] :
-                            path.append(dest)
-                            return path
+        def pathExplore(step, remainingPower):
+            visited.add(step)
+            print(visited)
+            print(path)
+            for node in self.graph[step] :
+                if node[0] == dest :
+                    if node[2] <= remainingPower :
+                        path.append(node[0])
+                        return path
+
+                elif node[0] not in visited:
+                    if node[2] <= remainingPower :
+                        path += [node[0]]
+                        path.extend(pathExplore(node[0], remainingPower - node[2]))
+                    else : visited.add(node[0])
                     
-                        if power>=j[1]:
-                            path2.append(j[0])
-                            trajets.append(path2)
-        return None
+            if path[-1] == dest : return path
+            return None
 
-    def min_power(self, src, dest, power) : 
+        return pathExplore(src, power)
+"""
 
+    
 
-        
     def connected_components(self):
         
         visited = set()  # On crée une variable contenant l'ensemble des noeuds qui ont déjà été étudié par la méthode
@@ -124,7 +151,7 @@ class Graph:
                 components.append(nodeComponent(node))  # On rajoute à la liste des composantes chacune des composante
 
         return components  #Renvoie une liste de liste de la forme [[Composante connexe 1],[autre composante connexe], ... ]
-    
+
 
     def connected_components_set(self):
         """
@@ -133,9 +160,34 @@ class Graph:
         """
         return set(map(frozenset, self.connected_components()))
     
+    def min_power(self, src, dest):
+        """
+        Should return path, min_power. 
+        """
+        raise NotImplementedError
 
-        
+
 def graph_from_file(filename):
+    file = open(filename, 'r')
+    nodes = []
+    lines = file.readlines() 
+    line1 = lines.pop(0).split()
+    nodes = range(1, int(line1[0]) + 1)
+    
+    graph = Graph(nodes)
+    for line in lines :    
+        data = [int(x) for x in line.split()]    
+        if len(data) == 3 :
+             graph.add_edge(data[0], data[1], data[2])
+        else :
+             graph.add_edge(data[0], data[1], data[2], data[3])
+
+
+
+
+    file.close()
+    
+    
     """
     Reads a text file and returns the graph as an object of the Graph class.
 
@@ -152,57 +204,7 @@ def graph_from_file(filename):
 
     Outputs: 
     -----------
-    g: Graph
+    G: Graph
         An object of the class Graph with the graph from file_name.
     """
-    with open(filename, "r") as file:
-        n, m = map(int, file.readline().split())
-        g = Graph(range(1, n+1))
-        for _ in range(m):
-            edge = list(map(int, file.readline().split()))
-            if len(edge) == 3:
-                node1, node2, power_min = edge
-                g.add_edge(node1, node2, power_min) # will add dist=1 by default
-            elif len(edge) == 4:
-                node1, node2, power_min, dist = edge
-                g.add_edge(node1, node2, power_min, dist)
-            else:
-                raise Exception("Format incorrect")
-    return g
-
-def find(self, parent, i):
-    if parent[i]==i:
-        return i
-    return self.find(parent, parent[i])
-
-def union(self, parent, rang, a, b):
-    a2=self.search(parent, a)
-    b2=self.search(parent,b)
-    if rang[a2] < rang[b2]:
-        parent[a2]=b2
-    elif rang[a2]>rang[b2]:
-        parent[b2]=a2
-    else:
-        parent[b2]=a2
-        rang[a2]+=1
-
-def kruskal(self):
-    result=[]
-  
-        
-
-
-        
-
-
-
-
-
-            
-
-
-
-
-
-
-    
+    return graph
