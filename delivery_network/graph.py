@@ -103,6 +103,16 @@ class Graph:
         return None
 
     def min_power(self, src, dest) : 
+        cc = self.connected_components_set()  
+        impossible = True
+        for k in cc : 
+            if src in k and dest in k : 
+                impossible = False
+                cc=k
+        
+        if impossible : 
+            return None
+        
         min = 0
         max = 1
         possible = lambda power: self.get_path_with_power(src, dest, power) != None
@@ -115,7 +125,6 @@ class Graph:
             pow = int((max+min)/2)
             if possible(pow) : max = pow
             else : min = pow
-            print(min,max)
             cpt+=1
 
         return [self.get_path_with_power(src, dest, max), max]
