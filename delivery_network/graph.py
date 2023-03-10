@@ -159,79 +159,85 @@ class Graph:
         For instance, for network01.in: {frozenset({1, 2, 3}), frozenset({4, 5, 6, 7})}
         """
         return set(map(frozenset, self.connected_components()))
-    
-
         
-def graph_from_file(filename):
-    """
-    Reads a text file and returns the graph as an object of the Graph class.
 
-    The file should have the following format: 
-        The first line of the file is 'n m'
-        The next m lines have 'node1 node2 power_min dist' or 'node1 node2 power_min' (if dist is missing, it will be set to 1 by default)
-        The nodes (node1, node2) should be named 1..n
-        All values are integers.
 
-    Parameters: 
-    -----------
-    filename: str
-        The name of the file
+    def find(self, parent, i):
+        if parent[i]==i:
+            return i
+        return self.find(parent, parent[i])
 
-    Outputs: 
-    -----------
-    g: Graph
-        An object of the class Graph with the graph from file_name.
-    """
-    with open(filename, "r") as file:
-        n, m = map(int, file.readline().split())
-        g = Graph(range(1, n+1))
-        for _ in range(m):
-            edge = list(map(int, file.readline().split()))
-            if len(edge) == 3:
-                node1, node2, power_min = edge
-                g.add_edge(node1, node2, power_min) # will add dist=1 by default
-            elif len(edge) == 4:
-                node1, node2, power_min, dist = edge
-                g.add_edge(node1, node2, power_min, dist)
-            else:
-                raise Exception("Format incorrect")
-    return g
+    def find(self, parent, i):
+            if i==parent[i]:
+                return parent[i]
+            return self.find(parent, parent[i])
 
-def find(self, parent, i):
-    if parent[i]==i:
-        return i
-    return self.find(parent, parent[i])
+    def union(self, parent, a, b):
+            aroot=self.find(parent,a)
+            broot=self.find(parent,b)
+            if aroot!=broot:
+                parent[aroot]=broot
 
-def find(parent, i):
-        if i==parent[i]:
-            return parent[i]
-        return find(parent, parent[i])
+    def kruskal(self):
+        #Ordonne la liste des arrêtes :
+        edges = []
+        for k in self.graph :
+            for edge in self.graph[k]:
+                print(edge)
+                edges.append([k,edge[0],edge[1],edge[2]])
+        takeThird = lambda elem: elem[2]
+        edges.sort(key=takeThird)
 
-    def union(g, parent, a, b):
-        aroot=find(parent,a)
-        broot=find(parent,b)
-        if aroot!=broot:
-            parent[aroot]=broot
-
-    def kruskal(g):
         g_mst=[]
+        self.graph
         parent=self.nodes
-        for node in self.nodes:
-            if find(parent, node1)!= find(parent, node2):
-                g_mst.append(
-                
+        for node1 in self.nodes:
+            for node in self.graph[node1] :
+                if self.find(parent, node1)!= self.find(parent, node[0]):
+                    g_mst.append(node1, node[0], node[1], node[2])
+                        
         return g_mst
-  
-        
-
-
-        
-
-
-
+    
+            
 
 
             
+
+
+def graph_from_file(filename):
+        """
+        Reads a text file and returns the graph as an object of the Graph class.
+        The file should have the following format: 
+            The first line of the file is 'n m'
+            The next m lines have 'node1 node2 power_min dist' or 'node1 node2 power_min' (if dist is missing, it will be set to 1 by default)
+            The nodes (node1, node2) should be named 1..n
+            All values are integers.
+        Parameters: 
+        -----------
+        filename: str
+            The name of the file
+        Outputs: 
+        -----------
+        g: Graph
+            An object of the class Graph with the graph from file_name.
+        """
+        with open(filename, "r") as file:
+            n, m = map(int, file.readline().split())
+            g = Graph(range(1, n+1))
+            for _ in range(m):
+                edge = list(map(int, file.readline().split()))
+                if len(edge) == 3:
+                    node1, node2, power_min = edge
+                    g.add_edge(node1, node2, power_min) # will add dist=1 by default
+                elif len(edge) == 4:
+                    node1, node2, power_min, dist = edge
+                    g.add_edge(node1, node2, power_min, dist)
+                else:
+                    raise Exception("Format incorrect")
+        return g
+
+
+                
 
 
 
