@@ -193,19 +193,25 @@ def find(self, parent, i):
         return i
     return self.find(parent, parent[i])
 
-def union(self, parent, rang, a, b):
-    a2=self.search(parent, a)
-    b2=self.search(parent,b)
-    if rang[a2] < rang[b2]:
-        parent[a2]=b2
-    elif rang[a2]>rang[b2]:
-        parent[b2]=a2
-    else:
-        parent[b2]=a2
-        rang[a2]+=1
+def find(parent, i):
+        if i==parent[i]:
+            return parent[i]
+        return find(parent, parent[i])
 
-def kruskal(self):
-    result=[]
+    def union(g, parent, a, b):
+        aroot=find(parent,a)
+        broot=find(parent,b)
+        if aroot!=broot:
+            parent[aroot]=broot
+
+    def kruskal(g):
+        g_mst=[]
+        parent=self.nodes
+        for node in self.nodes:
+            if find(parent, node1)!= find(parent, node2):
+                g_mst.append(
+                
+        return g_mst
   
         
 
