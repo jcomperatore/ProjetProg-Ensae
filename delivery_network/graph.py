@@ -102,8 +102,26 @@ class Graph:
                             trajets.append(path2)
         return None
 
-    def min_power(self, src, dest, power) : 
+    def min_power(self, src, dest) : 
+        min = 0
+        max = 1
+        possible = lambda power: self.get_path_with_power(src, dest, power) != None
 
+        while not possible(max) :
+            max *= 10
+        
+        cpt=0
+        while max - min > 1 and cpt <= 50: 
+            pow = int((max+min)/2)
+            if possible(pow) : max = pow
+            else : min = pow
+            print(min,max)
+            cpt+=1
+
+        return [self.get_path_with_power(src, dest, max), max]
+
+
+        
 
         
     def connected_components(self):
