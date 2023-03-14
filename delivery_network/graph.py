@@ -198,7 +198,20 @@ class Graph:
                         
         return g_mst
     
-            
+    def min_power_kruskal(self, src, dest) :
+        power = 100
+        chemin = None
+        while chemin == None : 
+            chemin = self.kruskal().get_path_with_power(src, dest)
+            power*=10
+        power = 0
+        for k in range(len(chemin)) : 
+            for node in self.graph[chemin[k] - 1] : 
+                if node[0] == chemin[k+1] :
+                     power = max([node[1],power])
+        return chemin + [power]
+
+
 
 
             
