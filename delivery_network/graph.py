@@ -172,12 +172,17 @@ class Graph:
                 return parent[i]
             return self.find(parent, parent[i])
 
-    def union(self, parent, a, b):
+    def union(self, parent, rank, a, b):
             aroot=self.find(parent,a)
             broot=self.find(parent,b)
-            if aroot!=broot:
+            if rank[aroot]<rank[broot]:
                 parent[aroot]=broot
-
+            elif rank[broot]<rank[aroot]:
+                parent[broot]=aroot
+            else:
+                parent[broot]=aroot
+                rank[aroot]+=1
+                
     def kruskal(self):
         #Ordonne la liste des arrêtes :
         edges = []
@@ -189,13 +194,13 @@ class Graph:
         edges.sort(key=takeThird)
 
         g_mst=[]
-        self.graph
         parent=self.nodes
+        rank=[0 for i in range(self.nb_nodes)]
         for node1 in self.nodes:
             for node in self.graph[node1] :
                 if self.find(parent, node1)!= self.find(parent, node[0]):
                     g_mst.append(node1, node[0], node[1], node[2])
-                        
+                    self.union(parent,rank,self.find(parent, node1) self.find(parent, node[0]))    
         return g_mst
     
             
