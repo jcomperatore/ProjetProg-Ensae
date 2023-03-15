@@ -69,6 +69,9 @@ class Graph:
         self.nb_edges += 1
 
     def get_path_with_power(self, src, dest, power):
+        """
+        Complexité en O(nb_nodes*nb_edges)
+        """
         visites=[False for i in range(self.nb_nodes)]
         trajets=[[src]]
         
@@ -86,20 +89,20 @@ class Graph:
             return [dest]
         
         while trajets:
-            path=trajets.pop(0)
-            i=path[-1]
-            if visites[i]==False:
+            path=trajets.pop(0)         #on étudie un des trajets possibles 
+            i=path[-1]                     # dernier sommet atteint du trajet sélectionné
+            if visites[i]==False:           # on vérifie si le sommet a déjà été atteint pour éviter de faire des boucles
                 visites[i] = True
-                for j in self.graph[i]:
+                for j in self.graph[i]:        # on étudie les voisins de i
                     path2 = path.copy()
-                    if j[0] in cc and not visites[j[0]]:
+                    if j[0] in cc and not visites[j[0]]:        # on vérifie que dest est connecté à j[0] et si le sommet a déjà été atteint pour éviter de faire des boucles
                         if j[0]==dest and power>=j[1] :
                             path.append(dest)
                             return path
                     
                         if power>=j[1]:
                             path2.append(j[0])
-                            trajets.append(path2)
+                            trajets.append(path2)               #on ajoute le trajet rallongé à la liste des trajets si toutes les conditions sont remplies 
         return None
 
     def min_power(self, src, dest) : 
@@ -112,6 +115,8 @@ class Graph:
         
         if impossible : 
             return None
+        
+        # Recherche dichotomique, complexité logarithmique (ie en O(log_2_(nb_nodes))) si on ne prend pas en compte la complexité des autres programmes
         
         min = 0
         max = 1
@@ -138,7 +143,7 @@ class Graph:
         visited = set()  # On crée une variable contenant l'ensemble des noeuds qui ont déjà été étudié par la méthode
         components = []  # On crée la liste des composantes connexes, que l'on initialise comme vide
 
-        def nodeComponent(node):  # On crée une fonction qui nous permettra de relier le noeud à tous les autres noeuds de sa composante connexe
+        def nodeComponent(node):  # On crée une fonction DFS qui nous permettra de relier le noeud à tous les autres noeuds de sa composante connexe
             visited.add(node)     # Le noeud étudié est rajouté à la liste des noeuds étudiés
             component = [node]    # Variable locale qui nous permettra de créer la composante
             for neighbor in self.graph[node]:  # On parcourt déjà les voisins directs du noued étudié
@@ -161,20 +166,33 @@ class Graph:
         return set(map(frozenset, self.connected_components()))
         
 
+    def DFS_kruskal(B i, visites):
+        """
+        Fonction récursive permettant de trouver les sommets d'un arbre B qui sont connectés à i
+        """
+        visites[i]=True
+        B.append(i)
+        for j in B[i]:
+            if visites[j[0]]==False:
+                T=self.F(B,j[0],visites)
+        return T
 
     def find(self, parent, i):
-        if parent[i]==i:
-            return i
-        return self.find(parent, parent[i])
-
-    def find(self, parent, i):
+        """
+        Fonction récursive permettant de trouver le représentant de la classe d'équivalence d'un sommet d'un graphe
+        """
             if i==parent[i]:
                 return parent[i]
             return self.find(parent, parent[i])
 
     def union(self, parent, rank, a, b):
-            aroot=self.find(parent,a)
-            broot=self.find(parent,b)
+        """
+        Fonction permettant de trouver joindre deux classes d'équivalence selon le rang de leur représentant
+        Ici, le sommet avec le plus grand rang devient le parent. Si les rangs sont identiques, alors le rang de la classe de a est augmenté. 
+        Complexité en O(1)
+        """
+            aroot=self.find(parent,a)       #Représengtant de la classe de a
+            broot=self.find(parent,b)       # Représentant de la classe de b
             if rank[aroot]<rank[broot]:
                 parent[aroot]=broot
             elif rank[broot]<rank[aroot]:
@@ -184,7 +202,11 @@ class Graph:
                 rank[aroot]+=1
                 
     def kruskal(self):
-        #Ordonne la liste des arrêtes :
+        """
+        Complexité en O(nb_nodes*log(nb_edges))
+        """
+  
+        #On ordonne d'abord la liste des arrêtes par puissance croissante :
         edges = []
         for k in self.graph :
             for edge in self.graph[k]:
@@ -202,6 +224,28 @@ class Graph:
                     g_mst.append(node1, node[0], node[1], node[2])
                     self.union(parent,rank,self.find(parent, node1) self.find(parent, node[0]))    
         return g_mst
+    
+    def get_path_with_power_kruskal(self, src, dest, power):
+        A=self.kruskal
+        if src==dest: 
+            return [dest]
+        visited1=[False for i in range(self.nb_nodes)]
+        if dest not in DFS_kruskal(A,src,visited1):
+            return None
+        trajet=[src]
+        while trajet[-1]!=dest:
+           B=dict([(n, []) for n in nodes])
+        # On crée un nouvel arbre dans lequel on isole le sommet trajet[-1] 
+               for n in nodes:
+                   for node in A[n]: 
+                       if node[0]!=trajet[-1]:
+                           B[n].append(node)
+            B[trajet[-1]]=[]
+            for edge in A[trajet[-1]]:          # on cherche quel voisin de trajet[-1] est connecté à dest sans passer par trajet[-1]
+                visited=[False for n in range(self.nb_nodes)]
+                if dest in DFS_kruskal(B, edge[0], visited) and power>=edge[0]: 
+                    trajet.append(edge[0])
+         return trajet
     
     def min_power_kruskal(self, src, dest) :
         power = 100
