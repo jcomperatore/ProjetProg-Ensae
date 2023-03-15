@@ -218,7 +218,7 @@ class Graph:
         node1=1
         parent=[0]
         for node in self.nodes:
-            parent.append(nodes)
+            parent.append(node)
         rank=[0 for i in range(self.nb_nodes+1)]
         g_mst=dict([(n, []) for n in self.nodes])
         while n < self.nb_nodes:
