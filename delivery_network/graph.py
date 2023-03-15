@@ -200,14 +200,14 @@ class Graph:
         takeThird = lambda elem: elem[2]
         edges.sort(key=takeThird)
         
-        n=1                         # n sert de compteur pour vérifier qu'on a exploré toutes les classes d'équivalence et qu'on obtient bien un arbre avec nb_nodes sommets (je n'ai pas bien compris pourquoi une boucle for 
+        n=0                     # n sert de compteur pour vérifier qu'on a exploré toutes les classes d'équivalence et qu'on obtient bien un arbre avec nb_nodes sommets (je n'ai pas bien compris pourquoi une boucle for 
         k=0
         parent=[0]
         for node in self.nodes:
             parent.append(node)         # on crée la liste des parents: chaque sommet qui n'est pas une racine va se voir attribuer un parent en fonction de son rang quand on applique la fonction union
         rank=[0 for i in range(self.nb_nodes+1)]
         d=dict([(n, []) for n in self.nodes])
-        while n < self.nb_nodes:
+        while n < self.nb_nodes-1:
             edge = edges[k]
             k += 1                                  # k permet d'explorer toutes les arrêtes classées par ordre croissant
             i = self.find(parent, edge[0])          # le représentant de la classe de i
@@ -253,36 +253,10 @@ class Graph:
                             trajets.append(path2)              
         return None
     
+    def min_power_kruskal(self, src, dest):
+        return self.kruskal().min_power(src,dest)
     
-    def min_power_kruskal1(self, src, dest) : 
-        cc = self.connected_components_set()  
-        impossible = True
-        for k in cc : 
-            if src in k and dest in k : 
-                impossible = False
-                cc=k
-        
-        if impossible : 
-            return None
-        
-        min = 0
-        max = 1
-        possible = lambda power: self.get_path_with_power_kruskal(src, dest, power) != None
-
-        while not possible(max) :
-            max *= 10
-        
-        cpt=0
-        while max - min > 1 and cpt <= 50: 
-            pow = int((max+min)/2)
-            if possible(pow) : max = pow
-            else : min = pow
-            cpt+=1
-
-        return [self.get_path_with_power(src, dest, max), max]
-    
-    
-    def min_power_kruskal(self, src, dest) :
+    def min_power_kruskal1(self, src, dest) :
         power = 100
         chemin = None
         while chemin == None : 
@@ -290,9 +264,9 @@ class Graph:
             power*=10
         power = 0
         for k in range(len(chemin)) : 
-            for node in self.graph[chemin[k] - 1] : 
-                if node[0] == chemin[k+1] :
-                     power = max([node[1],power])
+            for node in self.graph[chemin[k]] : 
+                if k!=len(chemin)-1 and node[0] == chemin[k+1] :
+                     power = max(node[1],power)
         return chemin + [power]
 
 
