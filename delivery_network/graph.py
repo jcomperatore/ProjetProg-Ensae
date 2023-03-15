@@ -181,9 +181,9 @@ class Graph:
         """
         Fonction récursive permettant de trouver le représentant de la classe d'équivalence d'un sommet d'un graphe
         """
-            if i==parent[i]:
-                return parent[i]
-            return self.find(parent, parent[i])
+        if i==parent[i]:           
+            return parent[i]
+        return self.find(parent, parent[i])
 
     def union(self, parent, rank, a, b):
         """
@@ -216,6 +216,8 @@ class Graph:
         edges.sort(key=takeThird)
         n=1
         node1=1
+        parent=[node for node in self.nodes]
+        rank=[0 for i in range(self.nb_nodes)]
         g_mst=dict([(n, []) for n in self.nodes])
         while n < self.nb_nodes:
             edge = self.graph[node1]
@@ -224,10 +226,10 @@ class Graph:
             y = self.find(parent, edge[0])
             if x != y:
                 n = n + 1
-                g_mst[node1].append([edge[0],edge[1],edge[2])
-                g_mst[edge[0]].append([node1,edge[1],edge[2])
+                g_mst[node1].append([edge[0],edge[1],edge[2]])
+                g_mst[edge[0]].append([node1,edge[1],edge[2]])
                 self.apply_union(parent, rank, x, y)
-         return g_mst
+        return g_mst
 
 
     def get_path_with_power_kruskal(self, src, dest, power):
@@ -250,7 +252,7 @@ class Graph:
                 visited=[False for n in range(self.nb_nodes)]
                 if dest in DFS_kruskal(B, edge[0], visited) and power>=edge[0]: 
                     trajet.append(edge[0])
-         return trajet
+        return trajet
     
     def min_power_kruskal(self, src, dest) :
         power = 100
