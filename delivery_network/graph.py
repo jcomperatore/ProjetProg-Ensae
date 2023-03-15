@@ -233,29 +233,6 @@ class Graph:
                 g_mst[edge[0]].append([edge[1],edge[2],edge[3]])
                 self.union(parent, rank, i, j)
         return g_mst
-
-
-    def get_path_with_power_kruskal(self, src, dest, power):
-        A=self.kruskal
-        if src==dest: 
-            return [dest]
-        visited1=[False for i in range(self.nb_nodes)]
-        if dest not in DFS_kruskal(A,src,visited1):
-            return None
-        trajet=[src]
-        while trajet[-1]!=dest:
-           B=dict([(n, []) for n in self.nodes])
-        # On crée un nouvel arbre dans lequel on isole le sommet trajet[-1] 
-           for n in self.nodes:               
-                for node in A[n]:     
-                    if node[0]!=trajet[-1]:
-                        B[n].append(node)
-            B[trajet[-1]]=[]
-            for edge in A[trajet[-1]]:          # on cherche quel voisin de trajet[-1] est connecté à dest sans passer par trajet[-1]
-                visited=[False for n in range(self.nb_nodes)]
-                if dest in DFS_kruskal(B, edge[0], visited) and power>=edge[0]: 
-                    trajet.append(edge[0])
-        return trajet
     
     def min_power_kruskal(self, src, dest) :
         power = 100
