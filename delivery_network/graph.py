@@ -191,15 +191,15 @@ class Graph:
         Ici, le sommet avec le plus grand rang devient le parent. Si les rangs sont identiques, alors le rang de la classe de a est augmenté. 
         Complexité en O(1)
         """
-            aroot=self.find(parent,a)       #Représengtant de la classe de a
-            broot=self.find(parent,b)       # Représentant de la classe de b
-            if rank[aroot]<rank[broot]:
-                parent[aroot]=broot
-            elif rank[broot]<rank[aroot]:
-                parent[broot]=aroot
-            else:
-                parent[broot]=aroot
-                rank[aroot]+=1
+        aroot=self.find(parent,a)       #Représengtant de la classe de a
+        broot=self.find(parent,b)       # Représentant de la classe de b
+        if rank[aroot]<rank[broot]:
+            parent[aroot]=broot
+        elif rank[broot]<rank[aroot]:
+            parent[broot]=aroot
+        else:
+             parent[broot]=aroot
+             rank[aroot]+=1
                 
     def kruskal(self):
         """
@@ -236,10 +236,10 @@ class Graph:
         while trajet[-1]!=dest:
            B=dict([(n, []) for n in nodes])
         # On crée un nouvel arbre dans lequel on isole le sommet trajet[-1] 
-               for n in nodes:
-                   for node in A[n]: 
-                       if node[0]!=trajet[-1]:
-                           B[n].append(node)
+           for n in nodes:               
+                for node in A[n]:     
+                    if node[0]!=trajet[-1]:
+                        B[n].append(node)
             B[trajet[-1]]=[]
             for edge in A[trajet[-1]]:          # on cherche quel voisin de trajet[-1] est connecté à dest sans passer par trajet[-1]
                 visited=[False for n in range(self.nb_nodes)]
