@@ -206,7 +206,7 @@ class Graph:
         for node in self.nodes:
             parent.append(node)         # on crée la liste des parents: chaque sommet qui n'est pas une racine va se voir attribuer un parent en fonction de son rang quand on applique la fonction union
         rank=[0 for i in range(self.nb_nodes+1)]
-        g_mst=dict([(n, []) for n in self.nodes])
+        d=dict([(n, []) for n in self.nodes])
         while n < self.nb_nodes:
             edge = edges[k]
             k += 1                                  # k permet d'explorer toutes les arrêtes classées par ordre croissant
@@ -214,9 +214,14 @@ class Graph:
             j = self.find(parent, edge[1])          # le représentant de la classe de j
             if i != j:                              # on vérifie que les classes de i et j ne sont pas les mêmes ie qu'on ne crée pas de cycle dans le graphe
                 n = n + 1
-                g_mst[edge[1]].append([edge[0],edge[2],edge[3]])
-                g_mst[edge[0]].append([edge[1],edge[2],edge[3]])
-                self.union(parent, rank, i, j)                      # On joint les deux classes
+                d[edge[1]].append([edge[0],edge[2],edge[3]])
+                d[edge[0]].append([edge[1],edge[2],edge[3]])
+                self.union(parent, rank, i, j)                   # On joint les deux classes
+        g_mst = Graph(range(1, self.nb_nodes+1))
+        for node1 in d: 
+            for edge in d[node1]:
+                node2, power_min, dist = edge
+                g_mst.add_edge(node1, node2, power_min, dist)
         return g_mst
     
     def get_path_with_power_kruskal(self, src, dest, power):
