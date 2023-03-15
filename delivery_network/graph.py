@@ -214,18 +214,22 @@ class Graph:
                 edges.append([k,edge[0],edge[1],edge[2]])
         takeThird = lambda elem: elem[2]
         edges.sort(key=takeThird)
-
+        n=1
+        node1=1
         g_mst=dict([(n, []) for n in self.nodes])
-        parent=self.nodes
-        rank=[0 for i in range(self.nb_nodes)]
-        for node1 in self.nodes:
-            for node in self.graph[node1] :
-                if self.find(parent, node1)!= self.find(parent, node[0]):
-                    g_mst[node1].append([node[0], node[1], node[2]])
-                    g_mst[node[0]].append([node1,node[1],node[2]])
-                    self.union(parent,rank,self.find(parent, node1) self.find(parent, node[0]))    
-        return g_mst
-    
+        while n < self.nb_nodes:
+            edge = self.graph[node1]
+            node1 += 1
+            x = self.find(parent, node1)
+            y = self.find(parent, edge[0])
+            if x != y:
+                n = n + 1
+                g_mst[node1].append([edge[0],edge[1],edge[2])
+                g_mst[edge[0]].append([node1,edge[1],edge[2])
+                self.apply_union(parent, rank, x, y)
+         return g_mst
+
+
     def get_path_with_power_kruskal(self, src, dest, power):
         A=self.kruskal
         if src==dest: 
@@ -260,11 +264,6 @@ class Graph:
                 if node[0] == chemin[k+1] :
                      power = max([node[1],power])
         return chemin + [power]
-
-
-
-
-            
 
 
 def graph_from_file(filename):
