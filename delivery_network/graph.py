@@ -216,19 +216,21 @@ class Graph:
         edges.sort(key=takeThird)
         n=1
         node1=1
-        parent=[node for node in self.nodes]
-        rank=[0 for i in range(self.nb_nodes)]
+        parent=[0]
+        for node in self.nodes:
+            parent.append(nodes)
+        rank=[0 for i in range(self.nb_nodes+1)]
         g_mst=dict([(n, []) for n in self.nodes])
         while n < self.nb_nodes:
             edge = self.graph[node1]
             node1 += 1
-            x = self.find(parent, node1)
-            y = self.find(parent, edge[0])
-            if x != y:
+            i = self.find(parent, node1)
+            j = self.find(parent, edge[0])
+            if i != j:
                 n = n + 1
                 g_mst[node1].append([edge[0],edge[1],edge[2]])
                 g_mst[edge[0]].append([node1,edge[1],edge[2]])
-                self.apply_union(parent, rank, x, y)
+                self.apply_union(parent, rank, i, j)
         return g_mst
 
 
