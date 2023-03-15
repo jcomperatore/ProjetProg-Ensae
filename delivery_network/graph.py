@@ -166,7 +166,7 @@ class Graph:
         return set(map(frozenset, self.connected_components()))
         
 
-    def DFS_kruskal(B i, visites):
+    def DFS_kruskal(B, i, visites):
         """
         Fonction récursive permettant de trouver les sommets d'un arbre B qui sont connectés à i
         """
