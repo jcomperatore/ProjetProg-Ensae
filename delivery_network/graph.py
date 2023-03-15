@@ -190,10 +190,7 @@ class Graph:
              rank[aroot]+=1
                 
     def kruskal(self):
-        """
-        Complexité en O(nb_nodes*log(nb_edges))
-        """
-  
+        
         #On ordonne d'abord la liste des arrêtes par puissance croissante :
         edges = []
         for k in self.graph :
@@ -202,24 +199,24 @@ class Graph:
                 edges.append([k,edge[0],edge[1],edge[2]])
         takeThird = lambda elem: elem[2]
         edges.sort(key=takeThird)
-        n=1
+        
+        n=1                         # n sert de compteur pour vérifier qu'on a exploré toutes les classes d'équivalence et qu'on obtient bien un arbre avec nb_nodes sommets (je n'ai pas bien compris pourquoi une boucle for 
         k=0
-        node1=1
         parent=[0]
         for node in self.nodes:
-            parent.append(node)
+            parent.append(node)         # on crée la liste des parents: chaque sommet qui n'est pas une racine va se voir attribuer un parent en fonction de son rang quand on applique la fonction union
         rank=[0 for i in range(self.nb_nodes+1)]
         g_mst=dict([(n, []) for n in self.nodes])
         while n < self.nb_nodes:
             edge = edges[k]
-            k += 1
-            i = self.find(parent, edge[0])
-            j = self.find(parent, edge[1])
-            if i != j:
+            k += 1                                  # k permet d'explorer toutes les arrêtes classées par ordre croissant
+            i = self.find(parent, edge[0])          # le représentant de la classe de i
+            j = self.find(parent, edge[1])          # le représentant de la classe de j
+            if i != j:                              # on vérifie que les classes de i et j ne sont pas les mêmes ie qu'on ne crée pas de cycle dans le graphe
                 n = n + 1
                 g_mst[edge[1]].append([edge[0],edge[2],edge[3]])
                 g_mst[edge[0]].append([edge[1],edge[2],edge[3]])
-                self.union(parent, rank, i, j)
+                self.union(parent, rank, i, j)                      # On joint les deux classes
         return g_mst
     
     def get_path_with_power_kruskal(self, src, dest, power):
@@ -240,7 +237,7 @@ class Graph:
             i=path[-1]                     
             if visites[i-1]==False:           
                 visites[i-1] = True
-                for j in self.kruskal[i]:        
+                for j in self.kruskal()[i]:        
                     path2 = path.copy()
                     if j[0] in cc and not visites[j[0]-1]:       
                         if j[0]==dest and power>=j[1] :
