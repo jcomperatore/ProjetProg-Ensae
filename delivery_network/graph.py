@@ -165,18 +165,6 @@ class Graph:
         """
         return set(map(frozenset, self.connected_components()))
         
-
-    def DFS_kruskal(B, i, visites):
-        """
-        Fonction récursive permettant de trouver les sommets d'un arbre B qui sont connectés à i
-        """
-        visites[i]=True
-        B.append(i)
-        for j in B[i]:
-            if visites[j[0]]==False:
-                T=self.F(B,j[0],visites)
-        return T
-
     def find(self, parent, i):
         """
         Fonction récursive permettant de trouver le représentant de la classe d'équivalence d'un sommet d'un graphe
@@ -233,6 +221,64 @@ class Graph:
                 g_mst[edge[0]].append([edge[1],edge[2],edge[3]])
                 self.union(parent, rank, i, j)
         return g_mst
+    
+    def get_path_with_power_kruskal(self, src, dest, power):
+        visites=[False for i in range(self.nb_nodes)]
+        trajets=[[src]]        
+        cc = self.connected_components_set()  
+        impossible = True
+        for k in cc : 
+            if src in k and dest in k : 
+                impossible = False
+                cc=k       
+        if impossible : 
+            return None        
+        if src == dest:
+            return [dest]        
+        while trajets:
+            path=trajets.pop(0)         
+            i=path[-1]                     
+            if visites[i-1]==False:           
+                visites[i-1] = True
+                for j in self.kruskal[i]:        
+                    path2 = path.copy()
+                    if j[0] in cc and not visites[j[0]-1]:       
+                        if j[0]==dest and power>=j[1] :
+                            path.append(dest)
+                            return path                    
+                        if power>=j[1]:
+                            path2.append(j[0])
+                            trajets.append(path2)              
+        return None
+    
+    
+    def min_power_kruskal1(self, src, dest) : 
+        cc = self.connected_components_set()  
+        impossible = True
+        for k in cc : 
+            if src in k and dest in k : 
+                impossible = False
+                cc=k
+        
+        if impossible : 
+            return None
+        
+        min = 0
+        max = 1
+        possible = lambda power: self.get_path_with_power_kruskal(src, dest, power) != None
+
+        while not possible(max) :
+            max *= 10
+        
+        cpt=0
+        while max - min > 1 and cpt <= 50: 
+            pow = int((max+min)/2)
+            if possible(pow) : max = pow
+            else : min = pow
+            cpt+=1
+
+        return [self.get_path_with_power(src, dest, max), max]
+    
     
     def min_power_kruskal(self, src, dest) :
         power = 100
