@@ -286,7 +286,7 @@ class Graph:
         power = 100
         chemin = None
         while chemin == None : 
-            chemin = self.kruskal().get_path_with_power(src, dest)
+            chemin = self.kruskal().get_path_with_power(src, dest,power)
             power*=10
         power = 0
         for k in range(len(chemin)) : 
