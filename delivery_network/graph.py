@@ -231,7 +231,7 @@ class Graph:
                 n = n + 1
                 g_mst[edge[1]].append([edge[0],edge[2],edge[3]])
                 g_mst[edge[0]].append([edge[1],edge[2],edge[3]])
-                self.apply_union(parent, rank, i, j)
+                self.union(parent, rank, i, j)
         return g_mst
 
 
