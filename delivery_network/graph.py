@@ -215,6 +215,7 @@ class Graph:
         takeThird = lambda elem: elem[2]
         edges.sort(key=takeThird)
         n=1
+        k=0
         node1=1
         parent=[0]
         for node in self.nodes:
@@ -222,14 +223,14 @@ class Graph:
         rank=[0 for i in range(self.nb_nodes+1)]
         g_mst=dict([(n, []) for n in self.nodes])
         while n < self.nb_nodes:
-            edge = self.graph[node1]
-            node1 += 1
-            i = self.find(parent, node1)
-            j = self.find(parent, edge[0])
+            edge = edges[k]
+            k += 1
+            i = self.find(parent, edge[0])
+            j = self.find(parent, edge[1])
             if i != j:
                 n = n + 1
-                g_mst[node1].append([edge[0],edge[1],edge[2]])
-                g_mst[edge[0]].append([node1,edge[1],edge[2]])
+                g_mst[edge[1]].append([edge[0],edge[2],edge[3]])
+                g_mst[edge[0]].append([edge[1],edge[2],edge[3]])
                 self.apply_union(parent, rank, i, j)
         return g_mst
 
