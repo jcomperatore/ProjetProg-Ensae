@@ -91,11 +91,11 @@ class Graph:
         while trajets:
             path=trajets.pop(0)         #on étudie un des trajets possibles 
             i=path[-1]                     # dernier sommet atteint du trajet sélectionné
-            if visites[i]==False:           # on vérifie si le sommet a déjà été atteint pour éviter de faire des boucles
-                visites[i] = True
+            if visites[i-1]==False:           # on vérifie si le sommet a déjà été atteint pour éviter de faire des boucles
+                visites[i-1] = True
                 for j in self.graph[i]:        # on étudie les voisins de i
                     path2 = path.copy()
-                    if j[0] in cc and not visites[j[0]]:        # on vérifie que dest est connecté à j[0] et si le sommet a déjà été atteint pour éviter de faire des boucles
+                    if j[0] in cc and not visites[j[0]-1]:        # on vérifie que dest est connecté à j[0] et si le sommet a déjà été atteint pour éviter de faire des boucles
                         if j[0]==dest and power>=j[1] :
                             path.append(dest)
                             return path
@@ -215,13 +215,14 @@ class Graph:
         takeThird = lambda elem: elem[2]
         edges.sort(key=takeThird)
 
-        g_mst=[]
+        g_mst=dict([(n, []) for n in self.nodes])
         parent=self.nodes
         rank=[0 for i in range(self.nb_nodes)]
         for node1 in self.nodes:
             for node in self.graph[node1] :
                 if self.find(parent, node1)!= self.find(parent, node[0]):
-                    g_mst.append(node1, node[0], node[1], node[2])
+                    g_mst[node1].append([node[0], node[1], node[2]])
+                    g_mst[node[0]].append([node1,node[1],node[2]])
                     self.union(parent,rank,self.find(parent, node1) self.find(parent, node[0]))    
         return g_mst
     
@@ -234,9 +235,9 @@ class Graph:
             return None
         trajet=[src]
         while trajet[-1]!=dest:
-           B=dict([(n, []) for n in nodes])
+           B=dict([(n, []) for n in self.nodes])
         # On crée un nouvel arbre dans lequel on isole le sommet trajet[-1] 
-           for n in nodes:               
+           for n in self.nodes:               
                 for node in A[n]:     
                     if node[0]!=trajet[-1]:
                         B[n].append(node)
