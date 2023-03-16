@@ -224,39 +224,10 @@ class Graph:
                 g_mst.add_edge(node1, node2, power_min, dist)
         return g_mst
     
-    def get_path_with_power_kruskal(self, src, dest, power):
-        visites=[False for i in range(self.nb_nodes)]
-        trajets=[[src]]        
-        cc = self.connected_components_set()  
-        impossible = True
-        for k in cc : 
-            if src in k and dest in k : 
-                impossible = False
-                cc=k       
-        if impossible : 
-            return None        
-        if src == dest:
-            return [dest]        
-        while trajets:
-            path=trajets.pop(0)         
-            i=path[-1]                     
-            if visites[i-1]==False:           
-                visites[i-1] = True
-                for j in self.kruskal()[i]:        
-                    path2 = path.copy()
-                    if j[0] in cc and not visites[j[0]-1]:       
-                        if j[0]==dest and power>=j[1] :
-                            path.append(dest)
-                            return path                    
-                        if power>=j[1]:
-                            path2.append(j[0])
-                            trajets.append(path2)              
-        return None
-    
-    def min_power_kruskal(self, src, dest):
+    def min_power_kruskal1(self, src, dest):
         return self.kruskal().min_power(src,dest)
     
-    def min_power_kruskal1(self, src, dest) :
+    def min_power_kruskal(self, src, dest) :
         power = 100
         chemin = None
         while chemin == None : 
