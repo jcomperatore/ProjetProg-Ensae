@@ -235,10 +235,10 @@ class Graph:
             power*=10
         power = 0
         for k in range(len(chemin)) : 
-            for node in self.graph[chemin[k]] : 
+            for node in self.kruskal().graph[chemin[k]] : 
                 if k!=len(chemin)-1 and node[0] == chemin[k+1] :
                      power = max(node[1],power)
-        return chemin + [power]
+        return [chemin] + [power]
 
 
 def graph_from_file(filename):
