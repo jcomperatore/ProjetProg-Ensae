@@ -208,6 +208,8 @@ class Graph:
         rank=[0 for i in range(self.nb_nodes+1)]
         d=dict([(n, []) for n in self.nodes])
         while n < self.nb_nodes-1:
+            if k==len(edges):
+                break
             edge = edges[k]
             k += 1                                  # k permet d'explorer toutes les arrêtes classées par ordre croissant
             i = self.find(parent, edge[0])          # le représentant de la classe de i
@@ -223,9 +225,6 @@ class Graph:
                 node2, power_min, dist = edge
                 g_mst.add_edge(node1, node2, power_min, dist)
         return g_mst
-    
-    def min_power_kruskal1(self, src, dest):
-        return self.kruskal().min_power(src,dest)
     
     def min_power_kruskal(self, src, dest) :
         cc = self.kruskal().connected_components_set()  
