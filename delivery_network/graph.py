@@ -228,6 +228,15 @@ class Graph:
         return self.kruskal().min_power(src,dest)
     
     def min_power_kruskal(self, src, dest) :
+        cc = self.kruskal().connected_components_set()  
+        impossible = True
+        for k in cc : 
+            if src in k and dest in k : 
+                impossible = False
+                cc=k
+        
+        if impossible : 
+            return None
         power = 100
         chemin = None
         while chemin == None : 
