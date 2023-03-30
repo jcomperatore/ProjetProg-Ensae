@@ -27,7 +27,7 @@ def clean_store(store):
     return clean_store
 
 
-def routes(filename):
+def Routes(filename):
     with open(filename, "r") as file:
         lines = file.readlines()
         lines.pop(0)
@@ -47,9 +47,6 @@ def Collection_de_camions(filename1, filename2, budget):
 
     camions=clean_store(store(filename1))
     routes=Routes(filename2)
-    Dico=dict([(n, []) for n in range(len(routes))])
-    for n in range(len(routes)):
-        Dico[n]=routes[n]
 
     # Etape 1: Création d'un dictionnaire associant chaque route au camion le moins cher pouvant la traverser
     d=dict([(n, []) for n in range(len(routes))])
@@ -68,6 +65,7 @@ def Collection_de_camions(filename1, filename2, budget):
     # Etape 2: On fait une liste de listes de routes pour lesquelles on ne dépasse pas le budget
     listes_routes=[]
     for i in d:
+        N=0
         paths1=[[i]]
         b=budget-d[i]
         B=[b for n in range(len(paths1))]
@@ -77,6 +75,9 @@ def Collection_de_camions(filename1, filename2, budget):
                 if B[0]-d[j]>0 and j not in path:
                     path.append(j)
                 paths1.append(path)
+                N+=1
+            if N==(len(routes)-1)**(len(routes)-1):
+                break
             B=[b for n in range(len(paths1))]
             for j in range(len(paths1)):
                 b=0
@@ -96,7 +97,6 @@ def Collection_de_camions(filename1, filename2, budget):
     profit=max(P)
     j=listes_routes.index(profit)
     return(listes_routes(j))
-
 print(routes("/home/onyxia/ProjetProg-Ensae-1/delivery_network/input/routes.1.in"))
 
 
