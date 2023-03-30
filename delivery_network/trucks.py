@@ -67,23 +67,25 @@ def Collection_de_camions(filename1, filename2, budget):
 
     # Etape 2: On fait une liste de listes de routes pour lesquelles on ne dépasse pas le budget
     listes_routes=[]
-    for i in range(len(d)):
-        pathsi=[[d[i]]]
-        b=budget-d[i][1]
+    for i in d:
+        paths1=[[routes[i]]]
+        b=budget-d[i]
+        B=[b for n in range(paths1)]
         while b>0:
-            path=pathsi.pop(0)
+            path=paths1.pop(0)
             for j in d:
-                if B[path][i]-d[j][1]>0 and j not in path:
+                if B[len(paths1-1)]-d[j][1]>0 and j not in path:
                     path.append(j)
-            pathsi.append(path)
-            B=dict([(path, budget) for path in pathsi])
-            for path in pathsi:
+            paths1.append(path)
+            B=[b for n in range(paths1)]
+            for j in range(len(paths1)):
                 b=0
+                path=paths1[j]
                 for route in path:
-                    B[path]= B[path]-d[route][1]
-                if B[path]>b:
-                    b=B[path]
-        for path in pathsi:
+                    B[j]= B[j]-d[routes.index(route)]
+                if B[j]>b:
+                    b=B[j]
+        for path in paths1:
             listes_routes.append(path)
     
     #Etape 3: On sélectionne la liste de routes avec le plus grand profit
