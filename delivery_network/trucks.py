@@ -46,24 +46,28 @@ def buylist(store, routes):
 def Collection_de_camions(filename1, filename2, budget):
 
     camions=clean_store(store(filename1))
-    routes=routes(filename2)
+    routes=Routes(filename2)
+    Dico=dict([(n, []) for n in range(len(routes))])
+    for n in range(len(routes)):
+        Dico[n]=routes[n]
 
     # Etape 1: Création d'un dictionnaire associant chaque route au camion le moins cher pouvant la traverser
-    d=dict([(route, []) for route in routes])
+    d=dict([(n, []) for n in range(len(routes))])
     A=[]
     for camion in camions:
         A.append(camion[0])
     M=max(A)
-    for route in routes:
+    for i in range(len(routes)):
+        route=routes[i]
         power_min=M
         for camion in camions:
             if camion[0]<power_min and camion[0]>=route[3]:
                 power_min=camion[0]
-        d[route]=power_min
+        d[i]=power_min
 
     # Etape 2: On fait une liste de listes de routes pour lesquelles on ne dépasse pas le budget
     listes_routes=[]
-    for i in len(d):
+    for i in range(len(d)):
         pathsi=[[d[i]]]
         b=budget-d[i][1]
         while b>0:
