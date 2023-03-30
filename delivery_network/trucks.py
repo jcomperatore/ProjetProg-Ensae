@@ -43,6 +43,54 @@ def buylist(store, routes):
     
     return
 
+def Collection_de_camions(filename1, filename2, budget):
+
+    camions=clean_store(store(filename1))
+    routes=routes(filename2)
+
+    # Etape 1: Création d'un dictionnaire associant chaque route au camion le moins cher pouvant la traverser
+    d=dict([(route, []) for route in routes])
+    A=[]
+    for camion in camions:
+        A.append(camion[0])
+    M=max(A)
+    for route in routes:
+        power_min=M
+        for camion in camions:
+            if camion[0]<power_min and camion[0]>=route[3]:
+                power_min=camion[0]
+        d[route]=power_min
+
+    # Etape 2: On fait une liste de listes de routes pour lesquelles on ne dépasse pas le budget
+    listes_routes=[]
+    for i in len(d):
+        pathsi=[[d[i]]]
+        b=budget-d[i][1]
+        while b>0:
+            path=pathsi.pop(0)
+            for j in d:
+                if B[path][i]-d[j][1]>0 and j not in path:
+                    path.append(j)
+            pathsi.append(path)
+            B=dict([(path, budget) for path in pathsi])
+            for path in pathsi:
+                b=0
+                for route in path:
+                    B[path]= B[path]-d[route][1]
+                if B[path]>b:
+                    b=B[path]
+        for path in pathsi:
+            listes_routes.append(path)
+    
+    #Etape 3: On sélectionne la liste de routes avec le plus grand profit
+    P=[0 for i in range(listes_routes)]
+    for i in len(listes_routes):
+        for route in listes_routes[i]:
+            P[i]=route[2]
+    profit=max(P)
+    j=listes_routes.index(profit)
+    return(listes_routes(j))
+
 
 print(routes("/home/onyxia/ProjetProg-Ensae-1/delivery_network/input/routes.1.in"))
 
