@@ -109,6 +109,31 @@ class Graph:
                             trajets.append(path2)               #on ajoute le trajet rallongé à la liste des trajets si toutes les conditions sont remplies 
         return None
 
+    def kruskal_path(self, kruskal=None): 
+        if kruskal is None:
+            kruskal = self.kruskal()
+        cpt=0
+        ccs = kruskal.connected_components()
+        path = []
+        
+        for cc in ccs: 
+            ancetres = dict([(n, []) for n in cc])
+            root = cc[0]
+            visites = set([root] + [k[0] for k in kruskal.graph[root]])
+            avisiter = [[root] + [k[0]] for k in kruskal.graph[root]] 
+            while len(avisiter) != 0 and cpt<20: 
+                chemin = avisiter[0]
+                ancetres[chemin[-1]]= chemin[-2]
+                visites.add(chemin[-1])
+                #print(avisiter)
+                for k in kruskal.graph[chemin[-1]]:
+                    #print(k)
+                    if k[0] not in visites:
+                        avisiter.append([chemin[-1]] + [k[0]])
+                avisiter = avisiter[1:]
+                #cpt+=1
+        return ancetres
+    
     def min_power(self, src, dest) : 
         cc = self.connected_components_set()  
         impossible = True
@@ -230,8 +255,10 @@ class Graph:
                 g_mst.add_edge(node1, node2, power_min, dist, 1)
         return g_mst
     
-    def min_power_kruskal(self, src, dest) :
-        cc = self.kruskal().connected_components_set()  
+    def min_power_kruskal(self, src, dest, kruskal=None) :
+                if kruskal is None:
+            kruskal=self.kruskal()
+        cc = kruskal.connected_components_set()  
         impossible = True
         for k in cc : 
             if src in k and dest in k : 
@@ -240,16 +267,16 @@ class Graph:
         
         if impossible : 
             return None
-        power = 100
-        chemin = None
-        while chemin == None : 
-            chemin = self.kruskal().get_path_with_power(src, dest,power)
-            power*=10
-        power = 0
+        
+        chemins = None
+
         for k in range(len(chemin)) : 
-            for node in self.kruskal().graph[chemin[k]] : 
+            for node in kruskal.graph[chemin[k]] : 
                 if k!=len(chemin)-1 and node[0] == chemin[k+1] :
                      power = max(node[1],power)
+        
+        
+        
         return [chemin] + [power]
 
 
