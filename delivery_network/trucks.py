@@ -47,6 +47,9 @@ def Collection_de_camions(filename1, filename2, budget):
 
     camions=clean_store(store(filename1))
     routes=Routes(filename2)
+    Dico=dict([(n, []) for n in range(len(routes))])
+    for n in range(len(routes)):
+        Dico[n]=routes[n]
 
     # Etape 1: Création d'un dictionnaire associant chaque route au camion le moins cher pouvant la traverser
     d=dict([(n, []) for n in range(len(routes))])
@@ -91,9 +94,11 @@ def Collection_de_camions(filename1, filename2, budget):
     
     #Etape 3: On sélectionne la liste de routes avec le plus grand profit
     P=[0 for i in range(listes_routes)]
-    for i in len(listes_routes):
-        for route in listes_routes[i]:
-            P[i]=route[2]
+    for i in len(listes_routes):        
+        for liste in listes_routes[i]:
+            for route in liste:
+                route=Dico[route]
+                P[i]=route[2]
     profit=max(P)
     j=listes_routes.index(profit)
     return(listes_routes(j))
