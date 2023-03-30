@@ -40,7 +40,7 @@ class Graph:
                 output += f"{source}-->{destination}\n"
         return output
     
-    def add_edge(self, node1, node2, power_min, dist=1):
+    def add_edge(self, node1, node2, power_min, dist=1, kruskal=None):
         """
         Adds an edge to the graph. Graphs are not oriented, hence an edge is added to the adjacency list of both end nodes. 
 
@@ -64,9 +64,13 @@ class Graph:
             self.nb_nodes += 1
             self.nodes.append(node2)
 
-        self.graph[node1].append((node2, power_min, dist))
-        self.graph[node2].append((node1, power_min, dist))
-        self.nb_edges += 1
+        if kruskal is not None :
+            self.graph[node1].append((node2, power_min, dist))
+            self.nb_edges += 1
+        else : 
+            self.graph[node1].append((node2, power_min, dist))
+            self.graph[node2].append((node1, power_min, dist))
+            self.nb_edges += 1
 
     def get_path_with_power(self, src, dest, power):
         """
@@ -223,7 +227,7 @@ class Graph:
         for node1 in d: 
             for edge in d[node1]:
                 node2, power_min, dist = edge
-                g_mst.add_edge(node1, node2, power_min, dist)
+                g_mst.add_edge(node1, node2, power_min, dist, 1)
         return g_mst
     
     def min_power_kruskal(self, src, dest) :
