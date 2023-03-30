@@ -68,21 +68,21 @@ def Collection_de_camions(filename1, filename2, budget):
     # Etape 2: On fait une liste de listes de routes pour lesquelles on ne dépasse pas le budget
     listes_routes=[]
     for i in d:
-        paths1=[[routes[i]]]
+        paths1=[[i]]
         b=budget-d[i]
         B=[b for n in range(len(paths1))]
         while b>0:
             path=paths1.pop(0)
             for j in d:
-                if B[len(paths1)-1]-d[j][1]>0 and j not in path:
+                if B[0]-d[j]>0 and j not in path:
                     path.append(j)
-            paths1.append(path)
+                paths1.append(path)
             B=[b for n in range(len(paths1))]
             for j in range(len(paths1)):
                 b=0
                 path=paths1[j]
                 for route in path:
-                    B[j]= B[j]-d[routes.index(route)]
+                    B[j]=B[j]-d[route]
                 if B[j]>b:
                     b=B[j]
         for path in paths1:
@@ -96,7 +96,6 @@ def Collection_de_camions(filename1, filename2, budget):
     profit=max(P)
     j=listes_routes.index(profit)
     return(listes_routes(j))
-
 
 print(routes("/home/onyxia/ProjetProg-Ensae-1/delivery_network/input/routes.1.in"))
 
