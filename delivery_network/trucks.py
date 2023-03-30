@@ -74,7 +74,7 @@ def Collection_de_camions(filename1, filename2, budget):
         while b>0:
             path=paths1.pop(0)
             for j in d:
-                if B[len(paths1-1)]-d[j][1]>0 and j not in path:
+                if B[len(paths1)-1]-d[j][1]>0 and j not in path:
                     path.append(j)
             paths1.append(path)
             B=[b for n in range(len(paths1))]
