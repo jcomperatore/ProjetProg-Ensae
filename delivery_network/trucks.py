@@ -99,8 +99,8 @@ def Collection_de_camions_naïf(filename1, filename2, budget):
             route=Dico[route]
             P[i]=route[2]
     profit=max(P)
-    j=listes_routes.index(profit)
-    return(listes_routes(j))
+    j=P.index(profit)
+    return(listes_routes[j])
 print(routes("/home/onyxia/ProjetProg-Ensae-1/delivery_network/input/routes.1.in"))
 
 
