@@ -43,7 +43,7 @@ def buylist(store, routes):
     
     return
 
-def Collection_de_camions(filename1, filename2, budget):
+def Collection_de_camions_naïf(filename1, filename2, budget):
 
     camions=clean_store(store(filename1))
     routes=Routes(filename2)
