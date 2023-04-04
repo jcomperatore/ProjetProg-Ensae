@@ -63,11 +63,10 @@ class Graph:
             self.graph[node2] = []
             self.nb_nodes += 1
             self.nodes.append(node2)
-
-        if kruskal is not None :
+        if kruskal is not None : 
             self.graph[node1].append((node2, power_min, dist))
             self.nb_edges += 1
-        else : 
+        else :
             self.graph[node1].append((node2, power_min, dist))
             self.graph[node2].append((node1, power_min, dist))
             self.nb_edges += 1
@@ -117,8 +116,9 @@ class Graph:
         path = []
         
         for cc in ccs: 
-            ancetres = dict([(n, []) for n in cc])
             root = cc[0]
+            ancetres = dict([(n, []) for n in cc])
+            ancetres[0] = root
             visites = set([root] + [k[0] for k in kruskal.graph[root]])
             avisiter = [[root] + [k[0]] for k in kruskal.graph[root]] 
             while len(avisiter) != 0 and cpt<20: 
@@ -133,6 +133,61 @@ class Graph:
                 avisiter = avisiter[1:]
                 #cpt+=1
         return ancetres
+
+
+    def get_path_with_kruskal(self, src, dest, ancetres = None, ccs = None) :
+        if ancetres is None : 
+            ancetres = self.kruskal_path()
+        
+        if ccs is None : 
+            ccs = self.connected_components_set() #On suppose que self est déjà un graphe de kruskal
+
+        root = ancetres[0]
+       
+        #On choisit la racine adaptée au chemin que l'on cherche
+        if len(ccs) >= 2:
+            for k in ccs :
+                if src in k :
+                    cc = k
+            for k in root :
+                if k in cc :
+                    root = k
+        
+        revert = False
+        if src == root : 
+            src, dest = dest, src
+            revert = True 
+
+        
+        step = src
+        chemin = [src]
+        while step != dest and step != root :
+            chemin.append(ancetres[step])
+            step = ancetres[step]
+        
+        if chemin[-1] != dest :
+            chemin2 = [dest]
+            step = ancetres[dest]
+            while step != root : 
+                chemin2.append(ancetres[step])
+                step = ancetres[step]
+            
+            chemin.reverse()
+
+            j, k = chemin[0], chemin2[0]
+            while j == k :
+                chemin, chemin2 = chemin[1:], chemin2[1:]
+                j, k = chemin[0], chemin2[0]
+            
+            chemin.reverse()
+            chemin2.reverse()
+            chemin = chemin + chemin2[1:]
+            
+        if revert :
+            chemin.reverse()
+        
+        return chemin
+    
     
     def min_power(self, src, dest) : 
         cc = self.connected_components_set()  
@@ -224,7 +279,6 @@ class Graph:
         edges = []
         for k in self.graph :
             for edge in self.graph[k]:
-                print(edge)
                 edges.append([k,edge[0],edge[1],edge[2]])
         takeThird = lambda elem: elem[2]
         edges.sort(key=takeThird)
@@ -255,12 +309,14 @@ class Graph:
                 g_mst.add_edge(node1, node2, power_min, dist, 1)
         return g_mst
     
-    def min_power_kruskal(self, src, dest, kruskal=None) :
-                if kruskal is None:
+    def min_power_kruskal(self, src, dest, kruskal = None, ancetres = None, ccs = None) :
+        if kruskal is None:
             kruskal=self.kruskal()
-        cc = kruskal.connected_components_set()  
+        if ccs is None:
+            ccs = kruskal.connected_components_set()  
         impossible = True
-        for k in cc : 
+        
+        for k in ccs : 
             if src in k and dest in k : 
                 impossible = False
                 cc=k
@@ -268,7 +324,8 @@ class Graph:
         if impossible : 
             return None
         
-        chemins = None
+        chemin = self.get_path_with_kruskal(src, dest, ancetres, ccs)
+        power  = 0
 
         for k in range(len(chemin)) : 
             for node in kruskal.graph[chemin[k]] : 

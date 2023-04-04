@@ -1,10 +1,21 @@
 from graph import Graph, graph_from_file
 
+data_path = "/home/onyxia/ProjetProg-Ensae/delivery_network/input/"
+data_path = "/Users/julescomperatore/ProjetProg-Ensae/delivery_network/input/"
+file_number = 4
+file_name = "network."+ str(file_number) +".in"
+route_name = "routes."+ str(file_number) +".in"
+
 global budget
 global g
 
 budget = 25000000000
-g = graph_from_file("/home/onyxia/ProjetProg-Ensae-1/delivery_network/input/network.1.in")
+g = graph_from_file(data_path + file_name)
+
+kruskal = g.kruskal()
+ancetres = g.kruskal_path()
+ccs = g.connected_components_set()
+
 
 def store(filename):
     with open(filename, "r") as file:
@@ -27,7 +38,7 @@ def clean_store(store):
     return clean_store
 
 
-def Routes(filename):
+def routes(filename, kruskal, ancetres, ccs):
     with open(filename, "r") as file:
         lines = file.readlines()
         lines.pop(0)
@@ -35,7 +46,7 @@ def Routes(filename):
         for line in lines:
             line = line.split()
             line = list(map(int, line))
-            routes += [line + [g.min_power_kruskal(line[0], line[1])[1]]]
+            routes += [line + [g.min_power_kruskal(line[0], line[1], kruskal, ancetres, ccs)[1]]]
     return routes
 
 
@@ -102,7 +113,9 @@ def Collection_de_camions(filename1, filename2, budget):
     profit=max(P)
     j=listes_routes.index(profit)
     return(listes_routes(j))
-print(routes("/home/onyxia/ProjetProg-Ensae-1/delivery_network/input/routes.1.in"))
+
+
+print(routes(data_path + route_name, kruskal, ancetres, ccs))
 
 
 
