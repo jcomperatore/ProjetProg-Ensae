@@ -2,7 +2,7 @@ from graph import Graph, graph_from_file
 
 data_path = "/home/onyxia/ProjetProg-Ensae/delivery_network/input/"
 data_path = "/Users/julescomperatore/ProjetProg-Ensae/delivery_network/input/"
-file_number = 4
+file_number = 2
 file_name = "network."+ str(file_number) +".in"
 route_name = "routes."+ str(file_number) +".in"
 
@@ -54,7 +54,7 @@ def buylist(store, routes):
     
     return
 
-def Collection_de_camions(filename1, filename2, budget):
+def Collection_de_camions_naïf(filename1, filename2, budget):
 
     camions=clean_store(store(filename1))
     routes=Routes(filename2)
@@ -105,15 +105,13 @@ def Collection_de_camions(filename1, filename2, budget):
     
     #Etape 3: On sélectionne la liste de routes avec le plus grand profit
     P=[0 for i in range(listes_routes)]
-    for i in len(listes_routes):        
-        for liste in listes_routes[i]:
-            for route in liste:
-                route=Dico[route]
-                P[i]=route[2]
+    for i in range(len(listes_routes)):        
+        for route in listes_routes[i]:
+            route=Dico[route]
+            P[i]=route[2]
     profit=max(P)
-    j=listes_routes.index(profit)
-    return(listes_routes(j))
-
+    j=P.index(profit)
+    return(listes_routes[j])
 
 print(routes(data_path + route_name, kruskal, ancetres, ccs))
 
