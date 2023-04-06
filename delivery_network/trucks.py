@@ -113,6 +113,47 @@ def Collection_de_camions_naïf(filename1, filename2, budget):
     j=P.index(profit)
     return(listes_routes[j])
 
+def Collection_de_camions_greedy(filename1, filename2, budget):
+
+    camions=clean_store(store(filename1))
+    routes=Routes(filename2)
+
+    # Création d'un dictionnaire associant chaque route au camion le moins cher pouvant la traverser
+    d=dict([(n, []) for n in range(len(routes))])
+    A=[]
+    for camion in camions:
+        A.append(camion[0])
+    M=max(A)
+    for i in range(len(routes)):
+        route=routes[i]
+        power_min=M
+        c=[]
+        for camion in camions:
+            if camion[0]<power_min and camion[0]>=route[3]:
+                power_min=camion[0]
+                c=camion
+        d[i]=c
+
+    # Tri des routes selon le ratio profi/coût
+    liste_routes=[]
+    for route in range(len(routes)):
+        profit=routes[route][2]
+        cost=d[route][1]
+        listes_routes.append([route,profit/cost])
+    takeTwo = lambda elem: elem[1]
+    liste_routes.sort(key=takeTwo, reverse=True) 
+ 
+    # Construction de la liste de routes finale
+    b=budget
+    L=[]
+    for i in range(len(listes_routes)):
+        route, ratio = listes_routes[i]
+        if d[route][1] <= b:
+            b -= d[route][1]
+            L.append(route)
+     
+    return L
+
 print(routes(data_path + route_name, kruskal, ancetres, ccs))
 
 
