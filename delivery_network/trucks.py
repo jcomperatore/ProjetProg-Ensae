@@ -38,7 +38,7 @@ def clean_store(store):
     return clean_store
 
 
-def routes(filename, kruskal, ancetres):
+def Routes(filename, kruskal, ancetres):
     with open(filename, "r") as file:
         lines = file.readlines()
         lines.pop(0)
@@ -116,7 +116,7 @@ def Collection_de_camions_naïf(filename1, filename2, budget):
 def Collection_de_camions_greedy(filename1, filename2, budget):
 
     camions=clean_store(store(filename1))
-    routes=routes(filename2,kruskal,ancetres)
+    routes=Routes(filename2,kruskal,ancetres)
 
     # Création d'un dictionnaire associant chaque route au camion le moins cher pouvant la traverser
     d=dict([(n, []) for n in range(len(routes))])
