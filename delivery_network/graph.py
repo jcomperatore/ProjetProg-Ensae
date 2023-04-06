@@ -111,36 +111,33 @@ class Graph:
     def kruskal_path(self, kruskal=None): 
         if kruskal is None:
             kruskal = self.kruskal()
-        cpt=0
-        ccs = kruskal.connected_components()
-        path = []
-        
-        for cc in ccs: 
-            root = cc[0]
-            ancetres = dict([(n, []) for n in cc])
-            ancetres[0] = root
-            visites = set([root] + [k[0] for k in kruskal.graph[root]])
-            avisiter = [[root] + [k[0]] for k in kruskal.graph[root]] 
-            while len(avisiter) != 0 and cpt<20: 
-                chemin = avisiter[0]
-                ancetres[chemin[-1]]= chemin[-2]
-                visites.add(chemin[-1])
-                #print(avisiter)
-                for k in kruskal.graph[chemin[-1]]:
-                    #print(k)
-                    if k[0] not in visites:
-                        avisiter.append([chemin[-1]] + [k[0]])
-                avisiter = avisiter[1:]
-                #cpt+=1
+        cpt=0    
+
+        root = kruskal.nodes[0]
+        ancetres = dict([(n, []) for n in kruskal.nodes])
+        ancetres[0] = root
+        visites = set([root] + [k[0] for k in kruskal.graph[root]])
+        avisiter = [[root] + [k[0]] for k in kruskal.graph[root]] 
+        while len(avisiter) != 0 and cpt<20: 
+            chemin = avisiter[0]
+            ancetres[chemin[-1]]= chemin[-2]
+            visites.add(chemin[-1])
+            #print(avisiter)
+            for k in kruskal.graph[chemin[-1]]:
+                #print(k)
+                if k[0] not in visites:
+                    avisiter.append([chemin[-1]] + [k[0]])
+            avisiter = avisiter[1:]
+            #cpt+=1
         return ancetres
 
 
-    def get_path_with_kruskal(self, src, dest, ancetres = None, ccs = None) :
+    def get_path_with_kruskal(self, src, dest, ancetres = None) :
         if ancetres is None : 
             ancetres = self.kruskal_path()
         
-        if ccs is None : 
-            ccs = self.connected_components_set() #On suppose que self est déjà un graphe de kruskal
+        """
+        ccs = self.connected_components_set() #On suppose que self est déjà un graphe de kruskal
 
         root = ancetres[0]
        
@@ -152,7 +149,8 @@ class Graph:
             for k in root :
                 if k in cc :
                     root = k
-        
+        """
+        root = ancetres[0]           
         revert = False
         if src == root : 
             src, dest = dest, src
@@ -309,10 +307,11 @@ class Graph:
                 g_mst.add_edge(node1, node2, power_min, dist, 1)
         return g_mst
     
-    def min_power_kruskal(self, src, dest, kruskal = None, ancetres = None, ccs = None) :
+    def min_power_kruskal(self, src, dest, kruskal = None, ancetres = None) :
         if kruskal is None:
             kruskal=self.kruskal()
-        if ccs is None:
+        
+        """        if ccs is None:
             ccs = kruskal.connected_components_set()  
         impossible = True
         
@@ -323,8 +322,9 @@ class Graph:
         
         if impossible : 
             return None
+            """
         
-        chemin = self.get_path_with_kruskal(src, dest, ancetres, ccs)
+        chemin = self.get_path_with_kruskal(src, dest, ancetres)
         power  = 0
 
         for k in range(len(chemin)) : 
