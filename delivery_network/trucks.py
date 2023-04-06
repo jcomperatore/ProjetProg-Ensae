@@ -58,7 +58,7 @@ def buylist(store, routes):
 def Collection_de_camions_naïf(filename1, filename2, budget):
 
     camions=clean_store(store(filename1))
-    routes=Routes(filename2)
+    routes=Routes(filename2,kruskal,ancetres,ccs)
     Dico=dict([(n, []) for n in range(len(routes))])
     for n in range(len(routes)):
         Dico[n]=routes[n]
@@ -117,7 +117,7 @@ def Collection_de_camions_naïf(filename1, filename2, budget):
 def Collection_de_camions_greedy(filename1, filename2, budget):
 
     camions=clean_store(store(filename1))
-    routes=Routes(filename2)
+    routes=Routes(filename2,kruskal,ancetres,ccs)
 
     # Création d'un dictionnaire associant chaque route au camion le moins cher pouvant la traverser
     d=dict([(n, []) for n in range(len(routes))])
