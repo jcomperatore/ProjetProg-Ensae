@@ -2,11 +2,11 @@ from graph import Graph, graph_from_file
 
 data_path = "/home/onyxia/ProjetProg-Ensae/delivery_network/input/"
 data_path = "C:/Users/jules/Desktop/ProjetProg-Ensae/ProjetProg-Ensae/delivery_network/input/"
-file_number = 3
+file_number = 2
 file_name = "network."+ str(file_number) +".in"
 route_name = "routes."+ str(file_number) +".in"
+trucks_name = "trucks."+ str(2) +".in"
 
-global budget
 global g
 
 budget = 25000000000
@@ -38,7 +38,7 @@ def clean_store(store):
     return clean_store
 
 
-def Routes(filename, kruskal, ancetres):
+def lire_routes(filename, kruskal, ancetres):
     with open(filename, "r") as file:
         lines = file.readlines()
         lines.pop(0)
@@ -57,7 +57,7 @@ def buylist(store, routes):
 def Collection_de_camions_naïf(filename1, filename2, budget):
 
     camions=clean_store(store(filename1))
-    routes=Routes(filename2,kruskal,ancetres,ccs)
+    routes=lire_routes(filename2,kruskal,ancetres,ccs)
     Dico=dict([(n, []) for n in range(len(routes))])
     for n in range(len(routes)):
         Dico[n]=routes[n]
@@ -113,10 +113,10 @@ def Collection_de_camions_naïf(filename1, filename2, budget):
     j=P.index(profit)
     return(listes_routes[j])
 
-def Collection_de_camions_greedy(filename1, filename2, budget):
+def Collection_de_camions_greedy(filename1, filename2, budget, kruskal, ancetres):
 
     camions=clean_store(store(filename1))
-    routes=Routes(filename2,kruskal,ancetres)
+    routes=lire_routes(filename2,kruskal,ancetres)
 
     # Création d'un dictionnaire associant chaque route au camion le moins cher pouvant la traverser
     d=dict([(n, []) for n in range(len(routes))])
@@ -141,22 +141,41 @@ def Collection_de_camions_greedy(filename1, filename2, budget):
         cost=d[route][1]
         liste_routes.append([route,profit/cost])
     takeTwo = lambda elem: elem[1]
-    liste_routes.sort(key=takeTwo, reverse=True) 
+    liste_routes.sort(key=takeTwo, reverse=False) #j'ai modifié le reverse = True pour juste pouvoir pop a chaque fois
  
     # Construction de la liste de routes finale
     b=budget
-    L=[]
+    buylist=dict([(k[0], 0) for k in camions])
+    affectations = dict([(k[0], []) for k in camions])
+    
+    """
     for i in range(len(liste_routes)):
         route, ratio = liste_routes[i]
         if d[route][1] <= b:
             b -= d[route][1]
-            L.append(route)
-     
-    return L
+            L.append([route])
+     """
+    route = liste_routes.pop()[0]
+    route_info = routes[route]
+    id_truck, cost = d[route]
+    
+    cpt, cpt_max = 0, len(liste_routes)
+    while b >= 0 and cpt < cpt_max:
+        buylist[id_truck] += 1
+        affectations[id_truck].append([route_info[0], route_info[1]])
+        
+        route = liste_routes.pop()[0]
+        route_info = routes[route]
+        id_truck, cost = d[route]
+        b -= cost
+        cpt += 1
 
-print(routes(data_path + route_name, kruskal, ancetres))
+    return buylist, affectations
 
+#print(routes(data_path + route_name, kruskal, ancetres))
+print("SIUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU")
 
+print(Collection_de_camions_greedy(data_path + trucks_name, data_path + route_name, budget, kruskal, ancetres)[1])
 
 
 
