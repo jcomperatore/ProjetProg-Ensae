@@ -1,8 +1,8 @@
 from graph import Graph, graph_from_file
 
 data_path = "/home/onyxia/ProjetProg-Ensae/delivery_network/input/"
-data_path = "/Users/julescomperatore/ProjetProg-Ensae/delivery_network/input/"
-file_number = 2
+data_path = "C:/Users/jules/Desktop/ProjetProg-Ensae/ProjetProg-Ensae/delivery_network/input/"
+file_number = 3
 file_name = "network."+ str(file_number) +".in"
 route_name = "routes."+ str(file_number) +".in"
 
@@ -14,7 +14,7 @@ g = graph_from_file(data_path + file_name)
 
 kruskal = g.kruskal()
 ancetres = g.kruskal_path()
-ccs = g.connected_components_set()
+#ccs = g.connected_components_set()
 
 
 def store(filename):
@@ -38,7 +38,7 @@ def clean_store(store):
     return clean_store
 
 
-def routes(filename, kruskal, ancetres, ccs):
+def routes(filename, kruskal, ancetres):
     with open(filename, "r") as file:
         lines = file.readlines()
         lines.pop(0)
@@ -46,8 +46,7 @@ def routes(filename, kruskal, ancetres, ccs):
         for line in lines:
             line = line.split()
             line = list(map(int, line))
-            if g.min_power_kruskal(line[0], line[1])!=None:
-                routes += [line + [g.min_power_kruskal(line[0], line[1], kruskal, ancetres, ccs)[1]]]
+            routes += [line + [g.min_power_kruskal(line[0], line[1], kruskal, ancetres)[1]]]
     return routes
 
 
@@ -117,7 +116,7 @@ def Collection_de_camions_naïf(filename1, filename2, budget):
 def Collection_de_camions_greedy(filename1, filename2, budget):
 
     camions=clean_store(store(filename1))
-    routes=Routes(filename2,kruskal,ancetres,ccs)
+    routes=routes(filename2,kruskal,ancetres)
 
     # Création d'un dictionnaire associant chaque route au camion le moins cher pouvant la traverser
     d=dict([(n, []) for n in range(len(routes))])
@@ -155,7 +154,7 @@ def Collection_de_camions_greedy(filename1, filename2, budget):
      
     return L
 
-print(routes(data_path + route_name, kruskal, ancetres, ccs))
+print(routes(data_path + route_name, kruskal, ancetres))
 
 
 
