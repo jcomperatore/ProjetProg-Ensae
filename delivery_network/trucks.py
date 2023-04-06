@@ -46,7 +46,8 @@ def routes(filename, kruskal, ancetres, ccs):
         for line in lines:
             line = line.split()
             line = list(map(int, line))
-            routes += [line + [g.min_power_kruskal(line[0], line[1], kruskal, ancetres, ccs)[1]]]
+            if g.min_power_kruskal(line[0], line[1])!=None:
+                routes += [line + [g.min_power_kruskal(line[0], line[1], kruskal, ancetres, ccs)[1]]]
     return routes
 
 
