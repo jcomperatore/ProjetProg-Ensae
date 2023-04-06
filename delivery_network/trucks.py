@@ -139,15 +139,15 @@ def Collection_de_camions_greedy(filename1, filename2, budget):
     for route in range(len(routes)):
         profit=routes[route][2]
         cost=d[route][1]
-        listes_routes.append([route,profit/cost])
+        liste_routes.append([route,profit/cost])
     takeTwo = lambda elem: elem[1]
     liste_routes.sort(key=takeTwo, reverse=True) 
  
     # Construction de la liste de routes finale
     b=budget
     L=[]
-    for i in range(len(listes_routes)):
-        route, ratio = listes_routes[i]
+    for i in range(len(liste_routes)):
+        route, ratio = liste_routes[i]
         if d[route][1] <= b:
             b -= d[route][1]
             L.append(route)
